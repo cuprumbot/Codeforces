@@ -3,6 +3,7 @@ nums = input().split()
 nums = [int(n) for n in nums]
 nums.sort(reverse=True)
 
+debug = False
 score = 0
 
 while (len(nums) > 0):
@@ -27,36 +28,84 @@ while (len(nums) > 0):
 
   if (sumHigh + sumMinusTwo > sumMinusOne):
     
+    #print("\n\ncaso A")
     score = score + high
     nums.pop(0)
 
     pos = 0
+    endOfHigh = None
+    endOfMinusOne = None
     while (pos < len(nums)):
-      if (nums[pos] == minusOne):
-        nums.pop(pos)
-      elif (nums[pos] < minusOne):
-        break
-      else:
-        pos = pos + 1
+      if (nums[pos] < high):
+        if (endOfHigh is None):
+          endOfHigh = pos
+
+      if (nums[pos] < minusOne):
+        if (endOfMinusOne is None):
+          endOfMinusOne = pos
+          break
+      
+      pos = pos + 1
+
+    if (endOfHigh is None):
+      first = []
+    else:
+      first = nums[ :endOfHigh]
+
+    if (endOfMinusOne is None):
+      second = []
+    else:
+      second = nums[endOfMinusOne: ]
+
+    if (endOfHigh is None) and (endOfMinusOne is None):
+      first = nums
+
+    if debug:
+      print("endOfHigh", endOfHigh)
+      print("first", first)
+      print("endOfMinusOne", endOfMinusOne)
+      print("second", second)
+    nums = first + second
+    #print(nums)
 
   else:
 
+    #print("\n\ncaso B")
     score = score + minusOne
-    needToPop = True
 
     pos = 0
+    endOfHigh = None
+    endOfMinusOne = None
+    endOfMinusTwo = None
     while (pos < len(nums)):
-      if (nums[pos] == high):
-        nums.pop(pos)
-      elif (nums[pos] == minusTwo):
-        nums.pop(pos)
-      elif (nums[pos] == minusOne) and needToPop:
-        nums.pop(pos)
-        needToPop = False
-      elif (nums[pos] < minusTwo):
-        break
-      else:
-        pos = pos + 1
+      if (nums[pos] < minusOne):
+        if (endOfMinusOne is None):
+          endOfMinusOne = pos
+      
+      if (nums[pos] < high):
+        if (endOfHigh is None):
+          endOfHigh = pos
+
+      if (nums[pos] < minusTwo):
+        if (endOfMinusTwo is None):
+          endOfMinusTwo = pos
+          break
+      
+      
+      pos = pos + 1
+
+    if (endOfMinusOne is None):
+      first = nums[endOfHigh: ]
+    else:
+      first = nums[endOfHigh:endOfMinusOne]
+
+    if (endOfMinusTwo is None):
+      second = []
+    else:
+      second = nums[endOfMinusTwo: ]
+
+    nums = first + second
+    nums.pop(0)
+    #print(nums)
 
 print(score)
-
